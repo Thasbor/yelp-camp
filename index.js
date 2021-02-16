@@ -4,6 +4,7 @@ const path = require('path')
 const methodOverride = require('method-override');
 const app = express();
 const Campground = require('./models/campground');
+const ejsMate = require('ejs-mate');
 
 
 
@@ -23,8 +24,11 @@ db.once('open', () => {
 app.set('view engine', 'ejs')
 app.set('vies', path.join(__dirname, 'views'))
 
+
+app.engine('ejs', ejsMate)
 app.use(express.urlencoded({extended: true}))
 app.use(methodOverride('_method'));
+
 
 
 
@@ -67,7 +71,7 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
 app.put('/campgrounds/:id', async (req,res) => {
     const {id} = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {useFindAndModify: false})
-    res.redirect(`${id}`)
+    res.redirect(`${campground._id}`)
  })
 
  app.delete('/campgrounds/:id', async (req, res) => {
